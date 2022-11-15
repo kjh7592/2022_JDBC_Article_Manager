@@ -2,6 +2,7 @@ package com.KoreaIT.example.JAM.service;
 
 import java.sql.Connection;
 
+import com.KoreaIT.example.JAM.Member;
 import com.KoreaIT.example.JAM.dao.MemberDao;
 
 public class MemberService {
@@ -19,4 +20,9 @@ public class MemberService {
 	public boolean isLoginDup(String loginId) {
 		return memberDao.isLoginIdDup(loginId);
 	}
+
+	public Member getMemberByLoginId(String loginId) {
+		return memberDao.getMemberByLoginId(loginId);
+	}
+	
 }
