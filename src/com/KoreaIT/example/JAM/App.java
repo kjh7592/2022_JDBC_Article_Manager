@@ -67,8 +67,12 @@ public class App {
 		
 		if(cmd.equals("member join")) {
 			memberController.doJoin(cmd);
+		}else if(cmd.equals("member logout")) {
+			memberController.logout(cmd);
 		}else if(cmd.equals("member login")) {
-			memberController.doLogin(cmd);
+			memberController.login(cmd);
+		}else if(cmd.equals("member profile")) {
+			memberController.showProfile(cmd);
 		}else if(cmd.equals("article write")) {
 			articleController.doWrite(cmd);
 		}else if(cmd.equals("article list")) {

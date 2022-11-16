@@ -84,7 +84,7 @@ public class MemberController extends Controller {
 		System.out.printf("%s회원님, 가입 되었습니다\n", name);		
 	}
 
-	public void doLogin(String cmd) {
+	public void login(String cmd) {
 		String loginId = null;
 		String loginPw = null;
 		System.out.println("== 로그인 ==");
@@ -135,11 +135,28 @@ public class MemberController extends Controller {
 			}
 			
 			
-			System.out.printf("%s님, 환영합니다\n", member.name);		
+			System.out.printf("%s님, 환영합니다\n", member.name);
+			
+			Container.session.login(member);
+			
 			break;
 			
 		}
 		
+	}
+
+	public void showProfile(String cmd) {
+		if(Container.session.loginedMemberId == -1) {
+			System.out.println("로그인 상태가 아닙니다");
+		}else {
+			System.out.println(Container.session.loginedMember.name);
+		}
+	}
+
+	public void logout(String cmd) {
+		Container.session.logout();
+		
+		System.out.println("로그아웃 되었습니다");
 	}
 
 }
