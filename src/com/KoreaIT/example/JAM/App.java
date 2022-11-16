@@ -5,17 +5,19 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Scanner;
 
+import com.KoreaIT.example.JAM.container.Container;
 import com.KoreaIT.example.JAM.controller.ArticleController;
 import com.KoreaIT.example.JAM.controller.MemberController;
 
 public class App {
 	public void run() {
-		Scanner sc = new Scanner(System.in);
+		Container.sc = new Scanner(System.in);
 		
+		Container.init();
 		
 		while(true) {
 			System.out.printf("명령어)");
-			String cmd = sc.nextLine().trim();
+			String cmd = Container.sc.nextLine().trim();
 			
 			Connection conn = null;
 			
@@ -30,7 +32,10 @@ public class App {
 			
 			try {
 				conn = DriverManager.getConnection(url, "root", "");
-				doAction(conn, sc, cmd);
+				
+				Container.conn = conn;
+				
+				doAction(cmd);
 				
 				if(cmd.equals("exit")) {
 					System.out.println("프로그램을 종료합니다");
@@ -52,13 +57,13 @@ public class App {
 			
 			
 		
-		sc.close();
+		Container.sc.close();
 	}
 
-	private void doAction(Connection conn, Scanner sc, String cmd) {
+	private void doAction(String cmd) {
 		
-		MemberController memberController = new MemberController(conn, sc);
-		ArticleController articleController = new ArticleController(conn, sc);
+		MemberController memberController = Container.memberController;
+		ArticleController articleController = Container.articleController;
 		
 		if(cmd.equals("member join")) {
 			memberController.doJoin(cmd);
