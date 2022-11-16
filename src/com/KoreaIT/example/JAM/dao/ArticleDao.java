@@ -105,4 +105,48 @@ public class ArticleDao {
 
 		DBUtil.update(Container.conn, sql);
 	}
+
+	public List<Article> getForPrintArticles(Map<String, Object> args) {
+		SecSql sql = new SecSql();
+
+		String searchKeyword = "";
+		int limitFrom = -1;
+		int limitTake = -1;		
+
+		if(args.containsKey("searchKeyword")) {
+			searchKeyword = (String) args.get("searchKeyword");
+		}
+
+		if(args.containsKey("limitFrom")) {
+			limitFrom = (int) args.get("limitFrom");
+		}
+
+		if(args.containsKey("limitTake")) {
+			limitTake = (int) args.get("limitTake");
+		}
+
+		sql.append("SELECT *");
+		sql.append("FROM (");
+		sql.append("SELECT a.*, m.name AS writerName");
+		sql.append("FROM article AS a");
+		sql.append("INNER JOIN `member` AS m");
+		sql.append("ON a.memberId = m.id");
+		sql.append("ORDER BY a.id DESC");
+		if(limitFrom != -1) {
+			sql.append("LIMIT ?, ?", limitFrom, limitTake);
+		}
+		sql.append(") A");
+		if(searchKeyword.length() > 0) {
+			sql.append("WHERE title LIKE CONCAT('%', ?, '%')", searchKeyword);
+		}
+
+		List<Map<String, Object>> articleListMap = DBUtil.selectRows(Container.conn, sql);
+
+		List<Article> articles = new ArrayList<>();
+
+		for (Map<String, Object> articleMap : articleListMap) {
+			articles.add(new Article(articleMap));
+		}
+		return articles;
+		}
 }
