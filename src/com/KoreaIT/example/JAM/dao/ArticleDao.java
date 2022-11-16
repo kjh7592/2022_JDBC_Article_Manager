@@ -10,64 +10,67 @@ import com.KoreaIT.example.JAM.util.DBUtil;
 import com.KoreaIT.example.JAM.util.SecSql;
 
 public class ArticleDao {
-	
+
 	public ArticleDao() {
 	}
 
-	public int doWrite(String title, String body) {
+	public int doWrite(String title, String body, int memberId) {
 		SecSql sql = new SecSql();
-		
+
 		sql.append("INSERT INTO article");
 		sql.append("SET regDate = NOW()");
 		sql.append(", updateDate = NOW()");
+		sql.append(", memberId = ?", memberId);
 		sql.append(", title = ?", title);
 		sql.append(", `body` = ?", body);
-		
+		sql.append(", hit = ?", 0);
+
 		return DBUtil.insert(Container.conn, sql);
 	}
 
 	public int doModify(int id, String title, String body) {
 		SecSql sql = new SecSql();
-		
+
 		sql.append("UPDATE article");
 		sql.append("SET updateDate = NOW()");
 		sql.append(", title = ?", title);
 		sql.append(", `body` = ?", body);
 		sql.append("WHERE id = ?", id);
-		
+
 		return DBUtil.update(Container.conn, sql);
 	}
-	
+
 	public void doDelete(int id) {
 		SecSql sql = new SecSql();
-		
+
 		sql.append("DELETE FROM article");
 		sql.append("WHERE id = ?", id);
-		
-		DBUtil.delete(Container.conn, sql);		
+
+		DBUtil.delete(Container.conn, sql);
 	}
-	
-	
+
 	public boolean isArticleExists(int id) {
 		SecSql sql = new SecSql();
-		
+
 		sql.append("SELECT COUNT(id) > 0");
 		sql.append("FROM article");
 		sql.append("WHERE id = ?", id);
-		
+
 		return DBUtil.selectRowBooleanValue(Container.conn, sql);
 	}
 
 	public Article getArticle(int id) {
 		SecSql sql = new SecSql();
-		
-		sql.append("SELECT *");
-		sql.append("FROM article");
-		sql.append("WHERE id = ?", id);
-		
+
+		sql.append("SELECT A.*, M.name AS writerName");
+		sql.append("FROM article AS A");
+		sql.append("INNER JOIN `member` AS M");
+		sql.append("ON A.memberId = M.id");
+		sql.append("WHERE A.id = ?", id);
+
 		Map<String, Object> articleMap = DBUtil.selectRow(Container.conn, sql);
-		
-		if(articleMap.isEmpty()) {
+
+		if (articleMap.isEmpty()) {
 			return null;
 		}
 		return new Article(articleMap);
@@ -76,17 +79,30 @@ public class ArticleDao {
 	public List<Article> getArticles() {
 
 		SecSql sql = new SecSql();
-		sql.append("SELECT *");
-		sql.append("FROM article");
+
+		sql.append("SELECT A.*, M.name AS writerName");
+		sql.append("FROM article AS A");
+		sql.append("INNER JOIN `member` AS M");
+		sql.append("ON A.memberId = M.id");
 		sql.append("ORDER BY id DESC");
-		
+
 		List<Map<String, Object>> articleListMap = DBUtil.selectRows(Container.conn, sql);
-		
+
 		List<Article> articles = new ArrayList<>();
-		
-		for(Map<String, Object> articleMap : articleListMap) {
+
+		for (Map<String, Object> articleMap : articleListMap) {
 			articles.add(new Article(articleMap));
-		}		
+		}
 		return articles;
+	}
+
+	public static void increseHit(int id) {
+		SecSql sql = new SecSql();
+
+		sql.append("UPDATE article");
+		sql.append("SET hit = hit + 1");
+		sql.append("WHERE id = ?", id);
+
+		DBUtil.update(Container.conn, sql);
 	}
 }

@@ -7,21 +7,21 @@ import com.KoreaIT.example.JAM.container.Container;
 import com.KoreaIT.example.JAM.dao.ArticleDao;
 
 public class ArticleService {
-	
+
 	private ArticleDao articleDao;
 
 	public ArticleService() {
 		articleDao = Container.articleDao;
 	}
 
-	public int doWrite(String title, String body) {
-		return articleDao.doWrite(title, body);
+	public int doWrite(String title, String body, int memberId) {
+		return articleDao.doWrite(title, body, memberId);
 	}
 
 	public int doModify(int id, String title, String body) {
 		return articleDao.doModify(id, title, body);
 	}
-	
+
 	public void doDelete(int id) {
 		articleDao.doDelete(id);
 	}
@@ -36,5 +36,9 @@ public class ArticleService {
 
 	public List<Article> getArticles() {
 		return articleDao.getArticles();
+	}
+
+	public void increseHit(int id) {
+		ArticleDao.increseHit(id);
 	}
 }

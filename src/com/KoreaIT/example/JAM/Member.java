@@ -26,5 +26,4 @@ public class Member extends Object {
 				+ ", loginPw=" + loginPw + ", name=" + name + "]";
 	}
 
-	
 }

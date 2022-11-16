@@ -22,20 +22,56 @@ CREATE TABLE `member`(
 	`name` VARCHAR(50) NOT NULL
 );
 
+#컬럼 추가
+ALTER TABLE article ADD COLUMN memberId INT UNSIGNED NOT NULL AFTER updateDate;
+DESC article;
+
 # article 데이터 추가
 INSERT INTO article
 SET regDate = NOW(),
 updateDate = NOW(),
-title = CONCAT('제목', RAND()),
-`body` = CONCAT('내용', RAND());
+memberId = 1,
+title = 'test1',
+`body` = 'test1';
+
+# article 데이터 추가
+INSERT INTO article
+SET regDate = NOW(),
+updateDate = NOW(),
+memberId = 2,
+title = 'test2',
+`body` = 'test2';
+
+# article 데이터 추가
+INSERT INTO article
+SET regDate = NOW(),
+updateDate = NOW(),
+memberId = 2,
+title = 'test3',
+`body` = 'test3';
+
+# article 데이터 추가
+INSERT INTO article
+SET regDate = NOW(),
+updateDate = NOW(),
+memberId = 1,
+title = 'test4',
+`body` = 'test4';
 
 # member 데이터 추가
 INSERT INTO `member`
 SET regDate = NOW(),
 updateDate = NOW(),
-loginId = CONCAT('TestId', RAND()),
-loginPw = CONCAT('TestPw', RAND()),
-`name` = CONCAT('TestName', RAND());
+loginId = 'test1',
+loginPw = 'test1',
+`name` = '김철수';
+
+INSERT INTO `member`
+SET regDate = NOW(),
+updateDate = NOW(),
+loginId = 'test2',
+loginPw = 'test2',
+`name` = '김영희';
 
 # article 테이블 조회
 SELECT * FROM article;
